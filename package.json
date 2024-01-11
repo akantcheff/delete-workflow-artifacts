@@ -1,0 +1,11 @@
+{
+  "name": "delete-workflow-artifacts",
+  "version": "1.0.0",
+  "description": "GitHub action to delete workflow artifacts",
+  "main": "dist/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
