@@ -1,23 +1,21 @@
-name: 'The name of your action here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Delete Workflow Artifacts'
+description: 'GitHub action to delete workflow artifacts'
+author: 'Bonitasoft'
 
-# Add your action's branding here. This will appear on the GitHub Marketplace.
-branding:
-  icon: 'heart'
-  color: 'red'
-
-# Define your inputs here.
 inputs:
-  milliseconds:
-    description: 'Your input description here'
+  auth-token:
+    description:
+      'A GitHub authorization token. Provide a Personal Access Token or the
+      GitHub Secret Token (secrets.GITHUB_TOKEN)'
     required: true
-    default: '1000'
+  includes:
+    description: 'List of artifacts to delete (by default all are deleted)'
+  excludes:
+    description: 'List of artifacts to keep'
 
-# Define your outputs here.
 outputs:
-  time:
-    description: 'Your output description here'
+  deleted-artifacts:
+    description: 'List of artifacts that have been deleted'
 
 runs:
   using: node20
