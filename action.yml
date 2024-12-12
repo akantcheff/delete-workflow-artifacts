@@ -1,0 +1,21 @@
+name: 'Delete Workflow Artifacts'
+description: 'GitHub action to delete workflow artifacts'
+author: 'Bonitasoft'
+
+inputs:
+  auth-token:
+    description:
+      'A GitHub authorization token. Provide a Personal Access Token or the GitHub Secret Token (secrets.GITHUB_TOKEN)'
+    required: true
+  includes:
+    description: 'List of artifacts to delete (by default all are deleted)'
+  excludes:
+    description: 'List of artifacts to keep'
+
+outputs:
+  deleted-artifacts:
+    description: 'List of artifacts that have been deleted'
+
+runs:
+  using: node20
+  main: dist/index.js
