@@ -2,6 +2,8 @@ name: Continuous Integration
 
 on:
   pull_request:
+    branches:
+      - main
   push:
     branches:
       - main
@@ -47,13 +49,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        file:
-          [
-            to-include-1.txt,
-            to-include-2.txt,
-            to-exclude-1.txt,
-            to-exclude-2.txt
-          ]
+        file: [to-include-1.txt, to-include-2.txt, to-exclude-1.txt, to-exclude-2.txt]
 
     steps:
       - name: Create file to archive

@@ -5,8 +5,7 @@ author: 'Bonitasoft'
 inputs:
   auth-token:
     description:
-      'A GitHub authorization token. Provide a Personal Access Token or the
-      GitHub Secret Token (secrets.GITHUB_TOKEN)'
+      'A GitHub authorization token. Provide a Personal Access Token or the GitHub Secret Token (secrets.GITHUB_TOKEN)'
     required: true
   includes:
     description: 'List of artifacts to delete (by default all are deleted)'
