@@ -21,13 +21,8 @@ jest.mock('@actions/github', () => ({
   getOctokit: jest.fn()
 }))
 
-// Mock the action's main function
-const _runMock = jest.spyOn(main, 'run')
-
 // Mock the GitHub Actions core library
 let getInputMock: jest.SpiedFunction<typeof core.getInput>
-let setOutputMock: jest.SpiedFunction<typeof core.setOutput>
-let setFailedMock: jest.SpiedFunction<typeof core.setFailed>
 
 /**
  * Mock the action's inputs.
@@ -52,8 +47,6 @@ describe('github action', () => {
       console.log('[INFO] ', msg)
     })
     getInputMock = jest.spyOn(core, 'getInput').mockImplementation()
-    setOutputMock = jest.spyOn(core, 'setOutput').mockImplementation()
-    setFailedMock = jest.spyOn(core, 'setFailed').mockImplementation()
 
     octokit = new GitHub({ auth: 'fake-token' })
   })
@@ -79,11 +72,24 @@ describe('github action', () => {
       }
     }
 
+    function mockListWorkflowRunArtifacts(): void {
+      Object.defineProperty(octokit.rest.actions, 'listWorkflowRunArtifacts', {
+        value: jest.fn().mockResolvedValue(mockData),
+        writable: true
+      })
+    }
+
+    function mockDeleteArtifact(): void {
+      Object.defineProperty(octokit.rest.actions, 'deleteArtifact', {
+        value: jest.fn().mockImplementation(),
+        writable: true
+      })
+    }
+
     it('should delete all artifacts', async () => {
       //given
-      ;(octokit.rest.actions.listWorkflowRunArtifacts as unknown as jest.Mock) = jest.fn().mockResolvedValue(mockData)
-      ;(octokit.rest.actions.deleteArtifact as unknown as jest.Mock) = jest.fn().mockImplementation()
-
+      mockListWorkflowRunArtifacts()
+      mockDeleteArtifact()
       mockInput({ 'auth-token': 'fake-token', includes: '', excludes: '' })
 
       //when
@@ -98,9 +104,8 @@ describe('github action', () => {
 
     it('should delete included artifacts', async () => {
       //given
-      ;(octokit.rest.actions.listWorkflowRunArtifacts as unknown as jest.Mock) = jest.fn().mockResolvedValue(mockData)
-      ;(octokit.rest.actions.deleteArtifact as unknown as jest.Mock) = jest.fn().mockImplementation()
-
+      mockListWorkflowRunArtifacts()
+      mockDeleteArtifact()
       const includedArtifacts = ['artifact-1', 'artifact-3'].join('\n')
       mockInput({ 'auth-token': 'fake-token', includes: includedArtifacts, excludes: '' })
 
@@ -117,9 +122,8 @@ describe('github action', () => {
 
     it('should not delete excluded artifacts', async () => {
       //given
-      ;(octokit.rest.actions.listWorkflowRunArtifacts as unknown as jest.Mock) = jest.fn().mockResolvedValue(mockData)
-      ;(octokit.rest.actions.deleteArtifact as unknown as jest.Mock) = jest.fn().mockImplementation()
-
+      mockListWorkflowRunArtifacts()
+      mockDeleteArtifact()
       const excludedArtifacts = ['artifact-1', 'artifact-3'].join('\n')
       mockInput({ 'auth-token': 'fake-token', includes: '', excludes: excludedArtifacts })
 
@@ -135,9 +139,8 @@ describe('github action', () => {
 
     it('excludes filter should override includes filter', async () => {
       //given
-      ;(octokit.rest.actions.listWorkflowRunArtifacts as unknown as jest.Mock) = jest.fn().mockResolvedValue(mockData)
-      ;(octokit.rest.actions.deleteArtifact as unknown as jest.Mock) = jest.fn().mockImplementation()
-
+      mockListWorkflowRunArtifacts()
+      mockDeleteArtifact()
       const includedArtifacts = ['artifact-1', 'artifact-3'].join('\n')
       const excludedArtifacts = 'artifact-3'
       mockInput({ 'auth-token': 'fake-token', includes: includedArtifacts, excludes: excludedArtifacts })
